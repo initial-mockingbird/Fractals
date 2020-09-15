@@ -15,11 +15,11 @@ public abstract class Fractal {
     * escapeVals:  cached answers for each point's iteration to escape.
     * c:           c value of the iteration function
     */
-    protected Complex low, high;
-    protected int nrows, ncols;
-    protected int maxIters;
-    protected int[][] escapeVals;
-    protected Complex c;
+    public Complex low, high;
+    public int nrows, ncols;
+    public int maxIters;
+    public int[][] escapeVals;
+    public Complex c;
 
     /**
     * Given one point p, determines the number of iterations

@@ -65,7 +65,7 @@ public class Complex {
     *            \(b\) are the real and imaginary part of c.
     */
     public static double abs(Complex c){
-        return Math.pow(c.r,2) + Math.pow(c.i,2) ;
+        return Math.sqrt( Math.pow(c.r,2) + Math.pow(c.i,2)) ;
     }
 
     /**

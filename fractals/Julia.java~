@@ -25,7 +25,6 @@ public class Mandelbrot extends Fractal {
         this.ncols = ncols;
         this.maxIters = maxIters;
         this.c = new Complex(0.0, 0.0);
-        this.escapeVals = this.escapes();
     }
 
 
@@ -44,7 +43,7 @@ public class Mandelbrot extends Fractal {
         * 4 then we escape.
         */
         for (i=0; i<this.maxIters;i++){
-            if (Complex.abs(z)>2){
+            if (Complex.abs(z)>4){
                 return i;
             }
 
