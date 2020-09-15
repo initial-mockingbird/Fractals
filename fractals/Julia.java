@@ -76,6 +76,7 @@ public class Julia extends Fractal {
         Julia m = new Julia (low, high, nrows, ncols,
                              maxIters, c);
 
+        System.out.println(m.toString());
         try {
         m.write(filename);
         } catch (Exception e) {

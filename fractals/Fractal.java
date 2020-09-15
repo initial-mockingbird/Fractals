@@ -15,11 +15,11 @@ public abstract class Fractal {
     * escapeVals:  cached answers for each point's iteration to escape.
     * c:           c value of the iteration function
     */
-    public Complex low, high;
-    public int nrows, ncols;
-    public int maxIters;
-    public int[][] escapeVals;
-    public Complex c;
+    protected Complex low, high;
+    protected int nrows, ncols;
+    protected int maxIters;
+    protected int[][] escapeVals;
+    protected Complex c;
 
     /**
     * Given one point p, determines the number of iterations
@@ -177,5 +177,55 @@ public abstract class Fractal {
         this.high = high;
         this.escapeVals = this.escapes();
     }
+
+    /**
+    * {@inheritDoc}
+    */
+    @Override
+    public String toString(){
+       String s = "";
+       s += "low: " + this.low.toString() + ". \n";
+       s += "high: " + this.high.toString() + ". \n";
+       s += "(nros, ncols): (" + String.valueOf(nrows) +", " +
+           String.valueOf(ncols) + "). \n";
+       s += "max iterations: " + String.valueOf(this.maxIters)+ ". \n";
+       s += "c-value: " + String.valueOf(this.c.toString()) + ". \n \n";
+       s += "Escape values matrix : \n";
+
+
+       /* See write method for further explaining*/
+       String counts;
+       int spacing;
+       int maxSpacing;
+       if (this.maxIters > 1){
+            maxSpacing = (int)Math.floor(Math.log10(this.maxIters));
+       }
+       else {
+            maxSpacing = 0;
+       }
+       
+       for (int i=0; i<this.nrows;i++){
+            for (int j=0; j<this.ncols; j++){
+                int p = this.escapeVals[i][j];
+                if (p >1){
+                    spacing = maxSpacing - (int)Math.floor(Math.log10(p));                    
+                }
+                else {
+                    spacing = maxSpacing;
+                }
+
+                if (j==0) {
+                    counts = " ".repeat(spacing) + String.valueOf(p);
+                } else {
+                    counts =  " ".repeat(spacing + 3 ) + String.valueOf(p);
+                }
+                s += counts;
+            }
+            s += ('\n');
+        }
+
+       return s;
+       
+    } 
     
 }
