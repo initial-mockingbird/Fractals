@@ -1,0 +1,12 @@
+package Fractals;
+
+public abstract class Fractal {
+
+    protected Complex low, high;
+    protected int nrows, ncols;
+    protected int maxIters;
+    protected int[][] escapeVals;
+    protected Complex c;
+
+    public abstract int escapeCount(Complex p);
+}
