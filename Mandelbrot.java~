@@ -1,0 +1,52 @@
+package Fractals;
+import Fractals.Fractal;
+import Fractals.Complex;
+public class Mandelbrot extends Fractal {
+    
+    public Mandelbrot(Complex low, Complex high, int nrows, int ncols, int maxIters){
+        this.low = low;
+        this.high = high;
+        this.nrows = nrows;
+        this.ncols = ncols;
+        this.maxIters = maxIters;
+    }
+
+    
+    public int escapeCount(Complex p){
+
+        /* 
+        * If the absolute value of p is greater than
+        * 2 then we escape.
+        */
+        for (int i=0; i<this.maxIters;i++){
+            if (Complex.abs(p)>2){
+                return i;
+            }
+            p = p.mul(p);
+        }
+
+        return maxIters;
+        
+    }
+
+    public static void main (String[] args){
+        
+        Complex low  = new Complex(Double.parseDouble(args[0]),
+                                   Double.parseDouble(args[2]));
+        
+        Complex high = new Complex(Double.parseDouble(args[1]),
+                                   Double.parseDouble(args[3]));
+        
+        int nrows       = Integer.parseInt(args[4]);
+        int ncols       = Integer.parseInt(args[5]);
+        int maxIters    = Integer.parseInt(args[6]);
+        String filename = args[7];
+
+        
+        Mandelbrot m = new Mandelbrot (low, high, nros, ncols,
+                                       maxIters);
+
+        m.write(filename);
+    }
+}
+                            

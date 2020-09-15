@@ -1,4 +1,4 @@
-package Fractals;
+package fractals;
 import java.lang.Math;
 
 /**
@@ -10,8 +10,8 @@ public class Complex {
     * r: real part of the complex number.
     * i: imaginary part of the complex number
     */
-    private double r;
-    private double i;
+    public double r;
+    public double i;
 
     /**
     * Creates a Complex object from two real numbers.
@@ -32,7 +32,7 @@ public class Complex {
     * @return    The trivial addition: (a+c) + (b+d)i
     */
     public static Complex add(Complex a, Complex b){
-        return new Complex(a.r+b.r,a.i+b.i);
+        return new Complex( a.r+b.r, a.i+b.i);
     }
 
     /**
@@ -43,7 +43,7 @@ public class Complex {
     * @return    The trivial substraction: (a-c) + (b-d)i
     */
     public static Complex sub(Complex a, Complex b){
-        return new Complex(a.r-b.r,a.i-b.i);
+        return new Complex( a.r- b.r, a.i-b.i);
     }
 
     /**
@@ -54,7 +54,7 @@ public class Complex {
     * @return    The trivial multiplication: (a+bi) * (c+di)
     */
     public static Complex mul(Complex a, Complex b){
-        return new Complex(a.r*b.r - a.i*b.i, a.i*b.r + a.r+b.i);
+        return new Complex(a.r*b.r - a.i*b.i, a.i*b.r + a.r*b.i);
     }
 
     /**
@@ -65,7 +65,7 @@ public class Complex {
     *            \(b\) are the real and imaginary part of c.
     */
     public static double abs(Complex c){
-        return Math.sqrt( Math.pow(c.r,2) + Math.pow(c.i,2) );
+        return Math.pow(c.r,2) + Math.pow(c.i,2) ;
     }
 
     /**

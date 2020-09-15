@@ -1,7 +1,7 @@
-package Fractals;
+package fractals;
 import java.io.*;
 import java.lang.Math;
-
+import fractals.Complex;
 
 /**
 * Abstract class that serves as a superclass for our fractals.
@@ -40,7 +40,8 @@ public abstract class Fractal {
         * Let x = |low.r-high.r| and y = |low.i - high.i|, 
         * Then note that the following relation
         *
-        * escape[i][j] = escape[0][0] + (i)*(x/nrows) + (j)*(y/ncols) (1)
+        * escape[i][j] = escape[0][0] + (i)*(x/nrows) - (j)*(y/ncols) (1)
+        * escape[0][0] = low.r + high.i i
         *
         * Holds (the proof is trivial), therefore we declare:
         *
@@ -50,23 +51,24 @@ public abstract class Fractal {
         *
         * in order to implement (1)
         */
-        Complex diff    = new Complex (Math.abs(low.r-high.r), Math.abs(low.i-high.i));
-        Complex stepCol = new Complex (0.0, diff.i/this.ncols);
-        Complex stepRow = new Complex (diff.r/this.nrows, 0.0);
-        Complex p       = new Complex (0.0, 0.0);
+        Complex diff    = new Complex (Math.abs(this.low.r-this.high.r), Math.abs(this.low.i-this.high.i));
+        Complex stepCol = new Complex (diff.i/(this.ncols -1),0.0);
+        Complex stepRow = new Complex (0.0, diff.r/(this.nrows -1));
+        Complex p       = new Complex (this.low.r, this.high.i);
 
         /*
         * This is just the implementation of (1)
         */
-        for (int i=0; i< this.nrows.r;i++){
-            p = p.add(stepRow);
+        for (int i=0; i< this.nrows;i++){
             for (int j=0; j<this.ncols;j++){
-                p = p.add(stepCol);
-                escps[i,j] = this.escapeCount(low.add(p));
+                escps[i][j] = this.escapeCount(p);
+                p = Complex.add(p,stepCol);
             }
-            p = new Complex(p.r,0.0);
+            p = Complex.sub(p,stepRow);
+            p = new Complex(this.low.r,p.i);
         }
 
+        
         return escps;
     }
 
@@ -80,7 +82,7 @@ public abstract class Fractal {
     * escapeVals as a matrix
     * @param filename name of the file.
     */
-    public void write(String filename){
+    public void write (String filename) throws IOException{
         // TODO: refactor write in terms of toString
         // TODO: consider the exceptions.
         /*
@@ -105,26 +107,26 @@ public abstract class Fractal {
             maxSpacing = 0;
         }
         
-
+        try {
         FileWriter f = new FileWriter(filename);
 
         /* Writing nrows ncols maxIter */
-        f.write(String.valueOf(this.nrows) + String.valueOf(this.ncols) +
-                String.valueOf(this.maxIters) + '\n');
+        f.write(String.valueOf(this.nrows) + " " + String.valueOf(this.ncols) +
+                 " " +String.valueOf(this.maxIters) + '\n');
 
         /* Writing lowRealVal highRealVal lowImaginaryVal highImaginaryVal */
-        f.write(String.valueOf(this.low.r) + String.valueOf(this.high.r) +
-                String.valueOf(this.low.i) + String.valueOf(this.high.i) + '\n');
+        f.write(String.valueOf(this.low.r) + " " + String.valueOf(this.high.r) +
+                " " + String.valueOf(this.low.i) + " " +String.valueOf(this.high.i) + '\n');
 
         /* Writing realC imaginaryC */
-        f.write(String.valueOf(this.c.r) + String.valueOf(this.c.i) + '\n');
+        f.write(String.valueOf(this.c.r) + " " + String.valueOf(this.c.i) + '\n');
 
         /* Writing <blank line> */
         f.write('\n');
 
         /* 
         * Writing the matrix, note that the number of spaces
-        * need in between each number is: |digits of p - maxSpacing| + 3
+        * needed in between each number is: |digits of p - maxSpacing| + 3
         */
         for (int i=0; i<this.nrows;i++){
             for (int j=0; j<this.ncols; j++){
@@ -133,23 +135,43 @@ public abstract class Fractal {
                     spacing = maxSpacing - (int)Math.floor(Math.log10(p));                    
                 }
                 else {
-                    spacing = 0
+                    spacing = maxSpacing;
                 }
 
-                counts = ' '.repeat(spacing) + String.valueOf(p) + ' '.repeat(3);
+                if (j==0) {
+                    counts = " ".repeat(spacing) + String.valueOf(p);
+                } else {
+                    counts =  " ".repeat(spacing + 3 ) + String.valueOf(p);
+                }
                 f.write(counts);
             }
             f.write('\n');
         }
-        
         f.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
+    /**
+    * Given a Factor, stay centered on the same spot but scale it
+    * by a factor so that each dimesion sees 1/factor of its 
+    * previous range.
+    * @param factor Zooming factor.
+    */
     public void zoom(double factor){
-        // TODO
-        return
+        Complex a = new Complex(1.0/factor,0.0);
+        /* It should suffice to update the dimensions. */
+        this.updateDimensions(Complex.mul(a,this.low),
+                              Complex.mul(a,this.high));
     }
 
+    /**
+    * Straight-up reset low and high, and recalculate other
+    * stale state (escape counts) as necessary.
+    * @param low  lower left coordinate.
+    * @param high upper right coordinate
+    */
     public void updateDimensions(Complex low, Complex high){
         this.low = low;
         this.high = high;
